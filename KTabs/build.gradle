@@ -1,0 +1,22 @@
+group 'ktabs'
+
+mainClassName = "com.kextor.ktabs.KTabs"
+
+jar {
+    baseName = "ktabs"
+    archiveName = "$baseName.$extension"
+
+    manifest {
+        attributes(
+                'Implementation-Title': "$baseName.$extension",
+                'Implementation-Version': version,
+                'Build-Time' : new java.text.SimpleDateFormat().format(new Date())
+        )
+        if (!configurations.compile.isEmpty()) {
+            attributes(
+                    'Main-Class': "$mainClassName",
+                    'Class-Path': "../libs/common/kotlin-stdlib-${kotlin_version}.jar"
+            )
+        }
+    }
+}

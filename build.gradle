@@ -1,0 +1,104 @@
+group 'kextor'
+
+allprojects {
+    version = '0.99b'
+    apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'kotlin'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    compileKotlin {
+        kotlinOptions {
+            freeCompilerArgs = ["-Xjsr305=strict"]
+            jvmTarget = "1.8"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            freeCompilerArgs = ["-Xjsr305=strict"]
+            jvmTarget = "1.8"
+        }
+    }
+
+    // Version of dependencies
+    ext {
+        kotlin_version = '1.3.30'
+        //    kotlin_logging_version = '1.6.26'
+        junit_version = '5.1.0'
+        assertj_swing_version = '3.9.2'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: "$kotlin_version"
+        implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: "$kotlin_version"
+        //    implementation group: 'io.github.microutils', name:'kotlin-logging', version:"$kotlin_logging_version"
+        implementation group: 'org.assertj', name: 'assertj-swing-junit', version: "$assertj_swing_version"
+
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junit_version"
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junit_version"
+    }
+}
+
+buildscript {
+    ext{
+        kotlin_version = '1.3.30'
+    }
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
+    }
+}
+
+
+dependencies {
+    compile project(':KSyntaxTextPane')
+    compile project(':KTabs')
+    compile project(':KMenu')
+}
+
+mainClassName = "com.kextor.Kextor"
+
+jar {
+    baseName = "kextor"
+    archiveName = "$baseName.$extension"
+
+    manifest {
+        attributes(
+                'Implementation-Title': "$baseName.$extension",
+                'Implementation-Version': version,
+                'Build-Time' : new java.text.SimpleDateFormat().format(new Date())
+        )
+        if (!configurations.compile.isEmpty()) {
+            attributes(
+                    'Main-Class': "$mainClassName",
+                    'Class-Path': "libs/common/kotlin-stdlib-${kotlin_version}.jar " +
+                                "libs/ui/ktabs.jar libs/ui/ksyntaxtextpane.jar libs/ui/kmenu.jar"
+            )
+        }
+    }
+}
+
+task copyKotlinStdLib(type: Copy) {
+    // Add "kotlin-stdlib" to allow execute the same jar in different OS's
+    File kotlinStdLib = configurations.runtime.files.find { it.name == "kotlin-stdlib-${kotlin_version}.jar" }
+    from kotlinStdLib
+    into 'build/libs/libs/common'
+}
+
+
+task fullBuild(dependsOn: ['build', 'copyKotlinStdLib'])

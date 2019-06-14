@@ -1,0 +1,22 @@
+group 'kmenu'
+
+mainClassName = "com.kextor.KMenu"
+
+jar {
+    baseName = "kmenu"
+    archiveName = "$baseName.$extension"
+
+    manifest {
+        attributes(
+                'Implementation-Title': "$baseName.$extension",
+                'Implementation-Version': version,
+                'Build-Time' : new java.text.SimpleDateFormat().format(new Date())
+        )
+        if (!configurations.compile.isEmpty()) {
+            attributes(
+                    'Main-Class': "$mainClassName",
+                    'Class-Path': "../libs/common/kotlin-stdlib-${kotlin_version}.jar"
+            )
+        }
+    }
+}

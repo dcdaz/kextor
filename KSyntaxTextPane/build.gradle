@@ -1,0 +1,34 @@
+group 'ksyntaxtextpane'
+
+apply plugin: 'antlr'
+
+// Version of dependencies
+ext {
+//    antlr_version = '4.7.2'
+}
+
+dependencies {
+//    antlr group: 'org.antlr', name:'antlr4', version:"$antlr_version"
+    compile project(':KTabs')
+}
+
+mainClassName = "com.kextor.syntax.textpane.KSyntaxTextArea"
+
+jar {
+    baseName = "ksyntaxtextpane"
+    archiveName = "$baseName.$extension"
+
+    manifest {
+        attributes(
+                'Implementation-Title': "$baseName.$extension",
+                'Implementation-Version': version,
+                'Build-Time' : new java.text.SimpleDateFormat().format(new Date())
+        )
+        if (!configurations.compile.isEmpty()) {
+            attributes(
+                    'Main-Class': "$mainClassName",
+                    'Class-Path': "../libs/common/kotlin-stdlib-${kotlin_version}.jar"
+            )
+        }
+    }
+}

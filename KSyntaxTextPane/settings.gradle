@@ -1,0 +1,5 @@
+rootProject.name = 'KSyntaxTextPane'
+
+include 'KTabs'
+
+project(':KTabs').projectDir = "$rootDir/KTabs" as File

@@ -1,0 +1,9 @@
+rootProject.name = 'Kextor'
+
+include 'KSyntaxTextPane'
+include 'KTabs'
+include 'KMenu'
+
+project(':KSyntaxTextPane').projectDir = "$rootDir/KSyntaxTextPane" as File
+project(':KTabs').projectDir = "$rootDir/KTabs" as File
+project(':KMenu').projectDir = "$rootDir/KMenu" as File
