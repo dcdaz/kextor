@@ -1,7 +1,7 @@
 package com.kextor
 
-import com.kextor.syntax.textpane.KSyntaxTextArea
 import com.kextor.ktabs.KTabbedPane
+import com.kextor.syntax.textpane.KScrollPane
 import java.nio.charset.Charset
 import javax.swing.JFileChooser
 
@@ -35,9 +35,9 @@ object Commands {
         val fc = JFileChooser()
         val res = fc.showSaveDialog(tabbedPane)
         if (res == JFileChooser.APPROVE_OPTION) {
-            (tabbedPane.selectedComponent as KSyntaxTextArea).file = fc.selectedFile
-            fc.selectedFile.writeText((tabbedPane.selectedComponent as KSyntaxTextArea).text)
-            (tabbedPane.selectedComponent as KSyntaxTextArea).title = fc.selectedFile.name
+            (tabbedPane.selectedComponent as KScrollPane).file = fc.selectedFile
+            fc.selectedFile.writeText((tabbedPane.selectedComponent as KScrollPane).text)
+            (tabbedPane.selectedComponent as KScrollPane).title = fc.selectedFile.name
         }
     }
 
@@ -45,11 +45,11 @@ object Commands {
         if (tabbedPane.selectedComponent == null) {
             return
         }
-        val file = (tabbedPane.selectedComponent as KSyntaxTextArea).file
+        val file = (tabbedPane.selectedComponent as KScrollPane).file
         if (file == null) {
             saveAsCommand(tabbedPane)
         } else {
-            file.writeText((tabbedPane.selectedComponent as KSyntaxTextArea).text)
+            file.writeText((tabbedPane.selectedComponent as KScrollPane).text)
         }
     }
 
@@ -57,6 +57,6 @@ object Commands {
         if (tabbedPane.selectedComponent == null) {
             return
         }
-        (tabbedPane.selectedComponent as KSyntaxTextArea).close()
+        (tabbedPane.selectedComponent as KScrollPane).close()
     }
 }

@@ -2,6 +2,7 @@ package com.kextor
 
 import com.kextor.syntax.textpane.KSyntaxTextArea
 import com.kextor.ktabs.KTabbedPane
+import com.kextor.syntax.textpane.KScrollPane
 import java.awt.Color
 import java.awt.Font
 import java.io.File
@@ -20,8 +21,8 @@ class KextorTabsHandler(kextorTabbedPane: KTabbedPane) {
         private val BACKGROUND_DARKER = Color(23, 24, 20)
     }
 
-    private val currentTab : KSyntaxTextArea?
-        get() = tabbedPane.selectedComponent as KSyntaxTextArea
+    private val currentTab : KScrollPane?
+        get() = tabbedPane.selectedComponent as KScrollPane
 
     val currentCode : String?
         get() = this.currentTab?.code
@@ -41,17 +42,18 @@ class KextorTabsHandler(kextorTabbedPane: KTabbedPane) {
         font: Font = defaultFont,
         initialContext: String = "",
         file: File? = null) {
+
         try {
-            val areaKextor: KSyntaxTextArea = KSyntaxTextArea.createKextorTextPane(
+            val kSyntaxTextArea = KSyntaxTextArea(
                 font,
-                initialContext,
-                file
+                initialContext
             )
+            val kScrollPane = KScrollPane(kSyntaxTextArea, file)
             val fullTitle = "<html><p style='font-size:small;'>$title</p></html>"
             tabbedPane.addTab(
                 fullTitle,
                 null,
-                areaKextor,
+                kScrollPane,
                 "Go to $title"
             )
             tabbedPane.setForegroundAt(tabbedPane.tabCount - 1, Color.white)
