@@ -1,5 +1,6 @@
 package com.kextor
 
+import com.kextor.syntax.textpane.KSyntaxTextAreaColors
 import com.kextor.ui.KextorSplashScreen
 import com.kextor.utils.PropertyManager
 import java.awt.Color
@@ -21,10 +22,20 @@ object Kextor {
         loadAppProperties("Kextor") // Load Properties first
 
         val iconTheme: String? = Kextor.propertyManager.getProperty("icon.theme")
-        val splashTheme: String? = Kextor.propertyManager.getProperty("splash.theme")
-        KextorSplashScreen(splashTheme, iconTheme)
+        val showSplashScreen: Boolean = Kextor.propertyManager.getProperty("splash.show")!!.toBoolean()
+
+        if (showSplashScreen) {
+            val splashTheme: String? = Kextor.propertyManager.getProperty("splash.theme")
+            KextorSplashScreen(splashTheme, iconTheme)
+        }
+
         val kextor = KextorInitGUI()
         val backgroundColor: Color = getColorProperty(propertyManager.getProperty("color.kextor.background")!!)
+
+        // Text Area Properties
+        setKsyntaxTexAreaColors()
+        setGutterColors()
+
         kextor.setBackgroundColor(backgroundColor)
         SwingUtilities.invokeLater { kextor.createAndShowKextorGUI(iconTheme) }
     }
@@ -58,6 +69,29 @@ object Kextor {
             mutableListOfColorNumbers[2],
             mutableListOfColorNumbers[3]
         )
+    }
+
+
+    private fun setKsyntaxTexAreaColors() {
+        val textAreaBGColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.backgroud")!!)
+        val textAreaFGColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.foreground")!!)
+        val caretColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.caret")!!)
+
+        KSyntaxTextAreaColors.textAreaBackgroundColor = textAreaBGColor
+        KSyntaxTextAreaColors.textAreaForegroundColor = textAreaFGColor
+        KSyntaxTextAreaColors.caretColor = caretColor
+    }
+
+    private fun setGutterColors() {
+        val gutterBGColor: Color = getColorProperty(propertyManager.getProperty("color.gutter.background")!!)
+        val gutterLineColor: Color = getColorProperty(propertyManager.getProperty("color.gutter.foreground")!!)
+        val gutterCurrentLineColor: Color = getColorProperty(
+            propertyManager.getProperty("color.gutter.currentLineForeground")!!
+        )
+
+        KSyntaxTextAreaColors.gutterBackgroundColor = gutterBGColor
+        KSyntaxTextAreaColors.gutterLineForegroundColor = gutterLineColor
+        KSyntaxTextAreaColors.gutterCurrentLineForegroundColor = gutterCurrentLineColor
     }
 
 }

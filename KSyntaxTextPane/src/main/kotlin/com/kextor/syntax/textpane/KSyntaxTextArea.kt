@@ -1,10 +1,7 @@
 package com.kextor.syntax.textpane
 
 
-import java.awt.Color
 import java.awt.Font
-import java.io.File
-import javax.swing.BorderFactory
 import javax.swing.JTextPane
 import javax.swing.SwingUtilities
 
@@ -16,20 +13,18 @@ import javax.swing.SwingUtilities
  */
 class KSyntaxTextArea(
     font: Font,
-    initialContext: String = ""
+    text: String = ""
 ) : JTextPane() {
 
     init {
         this.font = font
-        this.text = initialContext
-        this.background = kextorTextAreaBackgroundColor
-        this.foreground = kextorTextAreaForegroundColor
-        this.caretColor = kextorTextAreaCaretColor
-    }
+        this.text = text
+        this.background = KSyntaxTextAreaColors.textAreaBackgroundColor
+        this.foreground = KSyntaxTextAreaColors.textAreaForegroundColor
+        this.caretColor = KSyntaxTextAreaColors.caretColor
 
-    companion object {
-        private var kextorTextAreaBackgroundColor: Color = Color.LIGHT_GRAY
-        private var kextorTextAreaForegroundColor: Color = Color.BLACK
-        private var kextorTextAreaCaretColor: Color = Color.GRAY
+        SwingUtilities.invokeLater {
+            this.requestFocusInWindow()
+        }
     }
 }

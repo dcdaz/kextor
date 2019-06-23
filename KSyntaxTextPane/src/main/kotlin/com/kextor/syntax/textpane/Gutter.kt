@@ -34,9 +34,6 @@ class Gutter(
     private var lastDigits: Int = 0
     private var lastHeight: Int = 0
     private var updateFont: Boolean = false
-    private var gutterBackgroundColor: Color = Color.LIGHT_GRAY
-    private var lineForegroundColor: Color = Color.BLACK
-    private var currentLineForegroundColor: Color = Color.WHITE
     private var fonts: HashMap<String, FontMetrics>? = null
 
     init {
@@ -52,8 +49,8 @@ class Gutter(
 
     override fun paintComponent(graphics: Graphics?) {
         super.paintComponent(graphics)
-        background = gutterBackgroundColor
-        foreground = lineForegroundColor
+        background = KSyntaxTextAreaColors.gutterBackgroundColor
+        foreground = KSyntaxTextAreaColors.gutterLineForegroundColor
         val fontMetrics: FontMetrics = kextorTextPane.getFontMetrics(kextorTextPane.font)
         val availableWidth: Int = size.width - insets.left - insets.right
         val clip: Rectangle? = graphics?.clipBounds
@@ -63,7 +60,7 @@ class Gutter(
         while (rowStartOffset <= endOffset) {
             try {
                 if (isCurrentLine(rowStartOffset))
-                    graphics.color = currentLineForegroundColor
+                    graphics.color = KSyntaxTextAreaColors.gutterCurrentLineForegroundColor
                 else
                     graphics.color = foreground
 
@@ -160,21 +157,6 @@ class Gutter(
         val inner = EmptyBorder(0, BORDER_GAP, 0, BORDER_GAP)
         border = CompoundBorder(OUTER, inner)
         lastDigits = 0
-    }
-
-    fun setGutterBackgroundColor(color: Color) {
-        gutterBackgroundColor = color
-    }
-
-    fun setLineForegroundColor(color: Color) {
-        lineForegroundColor = color
-    }
-
-    /**
-     * Allow to change color of current line number
-     */
-    fun setCurrentLineForegroundColor(color: Color) {
-        currentLineForegroundColor = color
     }
 
     /**

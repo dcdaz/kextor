@@ -6,19 +6,21 @@ import javax.swing.BorderFactory
 import javax.swing.JScrollPane
 import javax.swing.SwingUtilities
 
+/**
+ * Class that attaches text area to a ScrollPane
+ *
+ * @author Daniel Córdova A.
+ */
 class KScrollPane(
     private val textArea: KSyntaxTextArea,
     var file : File?
 ): JScrollPane(textArea) {
 
     init {
+        textArea.caretPosition = 0
         val gutter = Gutter(textArea)
         this.viewportBorder = BorderFactory.createEmptyBorder()
         this.setRowHeaderView(gutter)
-
-        SwingUtilities.invokeLater {
-            this.requestFocusInWindow()
-        }
     }
 
     val text : String

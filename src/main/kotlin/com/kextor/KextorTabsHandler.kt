@@ -1,8 +1,8 @@
 package com.kextor
 
-import com.kextor.syntax.textpane.KSyntaxTextArea
 import com.kextor.ktabs.KTabbedPane
 import com.kextor.syntax.textpane.KScrollPane
+import com.kextor.syntax.textpane.KSyntaxTextArea
 import java.awt.Color
 import java.awt.Font
 import java.io.File
@@ -49,6 +49,7 @@ class KextorTabsHandler(kextorTabbedPane: KTabbedPane) {
                 initialContext
             )
             val kScrollPane = KScrollPane(kSyntaxTextArea, file)
+
             val fullTitle = "<html><p style='font-size:small;'>$title</p></html>"
             tabbedPane.addTab(
                 fullTitle,
