@@ -17,7 +17,6 @@ import javax.swing.JOptionPane
 class KextorTabsHandler(kextorTabbedPane: KTabbedPane) {
 
     companion object {
-        private const val DEFAULT_FONT_SIZE = 12.0f
         private val BACKGROUND_DARKER = Color(23, 24, 20)
     }
 
@@ -27,26 +26,16 @@ class KextorTabsHandler(kextorTabbedPane: KTabbedPane) {
     val currentCode : String?
         get() = this.currentTab?.code
 
-    private val defaultFont: Font = Font("Default", 0, 14)
-
-    var fontSize : Float = DEFAULT_FONT_SIZE
-        set(value) {
-            field = value
-            currentTab?.setFontSize(value)
-        }
-
     private val tabbedPane: KTabbedPane = kextorTabbedPane
 
     fun addTab(
         title: String,
-        font: Font = defaultFont,
-        initialContext: String = "",
+        fileData: String = "",
         file: File? = null) {
 
         try {
             val kSyntaxTextArea = KSyntaxTextArea(
-                font,
-                initialContext
+                fileData
             )
             val kScrollPane = KScrollPane(kSyntaxTextArea, file)
 

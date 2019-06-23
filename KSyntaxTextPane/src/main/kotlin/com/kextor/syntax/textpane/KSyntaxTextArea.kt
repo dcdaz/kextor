@@ -1,9 +1,14 @@
 package com.kextor.syntax.textpane
 
-
-import java.awt.Font
+import java.awt.Dimension
 import javax.swing.JTextPane
 import javax.swing.SwingUtilities
+import javax.swing.text.*
+import javax.swing.text.View
+import javax.swing.text.LabelView
+
+
+
 
 /**
  * Class that implements a customizable JTextPane and let user
@@ -12,16 +17,15 @@ import javax.swing.SwingUtilities
  * @author Daniel Córdova A.
  */
 class KSyntaxTextArea(
-    font: Font,
     text: String = ""
 ) : JTextPane() {
 
     init {
-        this.font = font
+        this.font = KSyntaxTextAreaProperties.textAreaFont
         this.text = text
-        this.background = KSyntaxTextAreaColors.textAreaBackgroundColor
-        this.foreground = KSyntaxTextAreaColors.textAreaForegroundColor
-        this.caretColor = KSyntaxTextAreaColors.caretColor
+        this.background = KSyntaxTextAreaProperties.textAreaBackgroundColor
+        this.foreground = KSyntaxTextAreaProperties.textAreaForegroundColor
+        this.caretColor = KSyntaxTextAreaProperties.caretColor
 
         SwingUtilities.invokeLater {
             this.requestFocusInWindow()

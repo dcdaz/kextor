@@ -1,10 +1,10 @@
 package com.kextor
 
-import com.kextor.syntax.textpane.KSyntaxTextAreaColors
+import com.kextor.syntax.textpane.KSyntaxTextAreaProperties
 import com.kextor.ui.KextorSplashScreen
 import com.kextor.utils.PropertyManager
 import java.awt.Color
-import java.lang.NumberFormatException
+import java.awt.Font
 import javax.swing.SwingUtilities
 
 /**
@@ -22,18 +22,16 @@ object Kextor {
         loadAppProperties("Kextor") // Load Properties first
 
         val iconTheme: String? = Kextor.propertyManager.getProperty("icon.theme")
-        val showSplashScreen: Boolean = Kextor.propertyManager.getProperty("splash.show")!!.toBoolean()
 
-        if (showSplashScreen) {
-            val splashTheme: String? = Kextor.propertyManager.getProperty("splash.theme")
-            KextorSplashScreen(splashTheme, iconTheme)
-        }
+        addKextorSplashScreen(iconTheme)
 
         val kextor = KextorInitGUI()
         val backgroundColor: Color = getColorProperty(propertyManager.getProperty("color.kextor.background")!!)
 
         // Text Area Properties
-        setKsyntaxTexAreaColors()
+        setKSyntaxTextAreaFont()
+        setGutterFont()
+        setKSyntaxTexAreaColors()
         setGutterColors()
 
         kextor.setBackgroundColor(backgroundColor)
@@ -71,15 +69,23 @@ object Kextor {
         )
     }
 
+    private fun addKextorSplashScreen(iconTheme: String?) {
+        val showSplashScreen: Boolean = Kextor.propertyManager.getProperty("splash.show")!!.toBoolean()
 
-    private fun setKsyntaxTexAreaColors() {
-        val textAreaBGColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.backgroud")!!)
+        if (showSplashScreen) {
+            val splashTheme: String? = Kextor.propertyManager.getProperty("splash.theme")
+            KextorSplashScreen(splashTheme, iconTheme)
+        }
+    }
+
+    private fun setKSyntaxTexAreaColors() {
+        val textAreaBGColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.background")!!)
         val textAreaFGColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.foreground")!!)
         val caretColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.caret")!!)
 
-        KSyntaxTextAreaColors.textAreaBackgroundColor = textAreaBGColor
-        KSyntaxTextAreaColors.textAreaForegroundColor = textAreaFGColor
-        KSyntaxTextAreaColors.caretColor = caretColor
+        KSyntaxTextAreaProperties.textAreaBackgroundColor = textAreaBGColor
+        KSyntaxTextAreaProperties.textAreaForegroundColor = textAreaFGColor
+        KSyntaxTextAreaProperties.caretColor = caretColor
     }
 
     private fun setGutterColors() {
@@ -89,9 +95,27 @@ object Kextor {
             propertyManager.getProperty("color.gutter.currentLineForeground")!!
         )
 
-        KSyntaxTextAreaColors.gutterBackgroundColor = gutterBGColor
-        KSyntaxTextAreaColors.gutterLineForegroundColor = gutterLineColor
-        KSyntaxTextAreaColors.gutterCurrentLineForegroundColor = gutterCurrentLineColor
+        KSyntaxTextAreaProperties.gutterBackgroundColor = gutterBGColor
+        KSyntaxTextAreaProperties.gutterLineForegroundColor = gutterLineColor
+        KSyntaxTextAreaProperties.gutterCurrentLineForegroundColor = gutterCurrentLineColor
+    }
+
+    private fun setKSyntaxTextAreaFont() {
+        val fontSize: Int = propertyManager.getProperty("font.textarea.size")!!.toInt()
+        val fontName: String = propertyManager.getProperty("font.textarea.name")!!
+        val fontStyle: Int = propertyManager.getProperty("font.textarea.style")!!.toInt()
+
+        val kSyntaxTextAreaFont = Font(fontName, fontStyle, fontSize)
+        KSyntaxTextAreaProperties.textAreaFont = kSyntaxTextAreaFont
+    }
+
+    private fun setGutterFont() {
+        val fontSize: Int = propertyManager.getProperty("font.gutter.size")!!.toInt()
+        val fontName: String = propertyManager.getProperty("font.gutter.name")!!
+        val fontStyle: Int = propertyManager.getProperty("font.gutter.style")!!.toInt()
+
+        val kSyntaxTextAreaFont = Font(fontName, fontStyle, fontSize)
+        KSyntaxTextAreaProperties.gutterFont = kSyntaxTextAreaFont
     }
 
 }

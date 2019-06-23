@@ -4,6 +4,7 @@ import com.kextor.ktabs.KTabbedPane
 import java.io.File
 import javax.swing.BorderFactory
 import javax.swing.JScrollPane
+import javax.swing.ScrollPaneConstants
 import javax.swing.SwingUtilities
 
 /**

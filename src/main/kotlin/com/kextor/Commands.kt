@@ -18,7 +18,7 @@ object Commands {
         if (res == JFileChooser.APPROVE_OPTION) {
             KextorTabsHandler(tabbedPane).addTab(
                 fc.selectedFile.name,
-                initialContext = fc.selectedFile.readText(Charset.defaultCharset()),
+                fileData = fc.selectedFile.readText(Charset.defaultCharset()),
                 file= fc.selectedFile
             )
         }
