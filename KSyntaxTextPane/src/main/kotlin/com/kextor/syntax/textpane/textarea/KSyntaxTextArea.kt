@@ -1,13 +1,8 @@
-package com.kextor.syntax.textpane
+package com.kextor.syntax.textpane.textarea
 
-import java.awt.Dimension
-import javax.swing.JTextPane
+import com.kextor.syntax.textpane.KSyntaxTextAreaProperties
+import javax.swing.JTextArea
 import javax.swing.SwingUtilities
-import javax.swing.text.*
-import javax.swing.text.View
-import javax.swing.text.LabelView
-
-
 
 
 /**
@@ -18,14 +13,15 @@ import javax.swing.text.LabelView
  */
 class KSyntaxTextArea(
     text: String = ""
-) : JTextPane() {
+) : JTextArea(text) {
 
     init {
         this.font = KSyntaxTextAreaProperties.textAreaFont
-        this.text = text
         this.background = KSyntaxTextAreaProperties.textAreaBackgroundColor
         this.foreground = KSyntaxTextAreaProperties.textAreaForegroundColor
         this.caretColor = KSyntaxTextAreaProperties.caretColor
+        this.lineWrap = true
+        this.wrapStyleWord = true
 
         SwingUtilities.invokeLater {
             this.requestFocusInWindow()

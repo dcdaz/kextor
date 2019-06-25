@@ -1,5 +1,6 @@
 package com.kextor.syntax.textpane
 
+import com.kextor.syntax.textpane.textarea.KSyntaxTextArea
 import java.awt.*
 import java.awt.Color
 import java.beans.PropertyChangeEvent

@@ -19,6 +19,12 @@ object KSyntaxTextAreaProperties {
     var gutterLineForegroundColor: Color = Color.BLACK
     var gutterCurrentLineForegroundColor: Color = Color.WHITE
 
+    var kScrollBarBorderColor: Color = Color.GRAY
+    var kScrollBarHoverColor: Color = Color.LIGHT_GRAY
+    var kScrollBarDraggingColor: Color = Color.LIGHT_GRAY
+    var kScrollBarBodyColor: Color = Color.GRAY
+
+
     // Fonts
     var textAreaFont: Font = Font("Default", 0, 14)
     var gutterFont: Font = Font("Default", 0, 12)

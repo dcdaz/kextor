@@ -2,9 +2,8 @@ package com.kextor
 
 import com.kextor.ktabs.KTabbedPane
 import com.kextor.syntax.textpane.KScrollPane
-import com.kextor.syntax.textpane.KSyntaxTextArea
+import com.kextor.syntax.textpane.textarea.KSyntaxTextArea
 import java.awt.Color
-import java.awt.Font
 import java.io.File
 import javax.swing.JOptionPane
 

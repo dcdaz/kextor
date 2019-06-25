@@ -33,6 +33,7 @@ object Kextor {
         setGutterFont()
         setKSyntaxTexAreaColors()
         setGutterColors()
+        setScrollbarColors()
 
         kextor.setBackgroundColor(backgroundColor)
         SwingUtilities.invokeLater { kextor.createAndShowKextorGUI(iconTheme) }
@@ -116,6 +117,18 @@ object Kextor {
 
         val kSyntaxTextAreaFont = Font(fontName, fontStyle, fontSize)
         KSyntaxTextAreaProperties.gutterFont = kSyntaxTextAreaFont
+    }
+
+    private fun setScrollbarColors() {
+        val scrollbarBorderColor: Color = getColorProperty(propertyManager.getProperty("color.scrollbar.border")!!)
+        val scrollbarHoverColor: Color = getColorProperty(propertyManager.getProperty("color.scrollbar.hover")!!)
+        val scrollbarDraggingColor: Color = getColorProperty(propertyManager.getProperty("color.scrollbar.dragging")!!)
+        val scrollbarBodyColor: Color = getColorProperty(propertyManager.getProperty("color.scrollbar.body")!!)
+
+        KSyntaxTextAreaProperties.kScrollBarBorderColor = scrollbarBorderColor
+        KSyntaxTextAreaProperties.kScrollBarHoverColor = scrollbarHoverColor
+        KSyntaxTextAreaProperties.kScrollBarDraggingColor = scrollbarDraggingColor
+        KSyntaxTextAreaProperties.kScrollBarBodyColor = scrollbarBodyColor
     }
 
 }

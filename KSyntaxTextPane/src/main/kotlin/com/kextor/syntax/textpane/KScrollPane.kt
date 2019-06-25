@@ -1,11 +1,11 @@
 package com.kextor.syntax.textpane
 
 import com.kextor.ktabs.KTabbedPane
+import com.kextor.syntax.textpane.textarea.KSyntaxTextArea
 import java.io.File
 import javax.swing.BorderFactory
 import javax.swing.JScrollPane
-import javax.swing.ScrollPaneConstants
-import javax.swing.SwingUtilities
+
 
 /**
  * Class that attaches text area to a ScrollPane
@@ -22,6 +22,8 @@ class KScrollPane(
         val gutter = Gutter(textArea)
         this.viewportBorder = BorderFactory.createEmptyBorder()
         this.setRowHeaderView(gutter)
+        this.verticalScrollBar.ui = KScrollBar()
+        this.horizontalScrollBar.ui = KScrollBar(false)
     }
 
     val text : String
