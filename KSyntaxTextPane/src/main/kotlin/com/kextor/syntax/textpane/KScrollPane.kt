@@ -1,6 +1,7 @@
 package com.kextor.syntax.textpane
 
 import com.kextor.ktabs.KTabbedPane
+import com.kextor.syntax.textpane.scrollbar.KScrollBar
 import com.kextor.syntax.textpane.textarea.KSyntaxTextArea
 import java.io.File
 import javax.swing.BorderFactory

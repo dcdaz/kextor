@@ -1,5 +1,6 @@
-package com.kextor.syntax.textpane
+package com.kextor.syntax.textpane.scrollbar
 
+import com.kextor.syntax.textpane.KSyntaxTextAreaProperties
 import java.awt.*
 import javax.swing.JButton
 import javax.swing.JComponent
