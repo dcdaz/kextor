@@ -14,8 +14,9 @@ import javax.swing.*
 class KextorSplashScreen(splashImageName: String?, iconTheme: String?): JFrame() {
 
     private lateinit var textLabel: JLabel
-    private val backgroudColor: Color =
-        if (splashImageName.isNullOrBlank() || splashImageName.contains("dark")) SPLASH_BACKGROUND_DARK else SPLASH_BACKGROUND_LIGHT
+    private val backgroundColor: Color =
+        if (splashImageName.isNullOrBlank() || splashImageName.contains("dark"))
+            SPLASH_BACKGROUND_DARK else SPLASH_BACKGROUND_LIGHT
 
     companion object {
         private const val SPLASH_WIDTH = 600
@@ -47,7 +48,7 @@ class KextorSplashScreen(splashImageName: String?, iconTheme: String?): JFrame()
         this.isUndecorated = true // Turn Off title bar
         this.setSize(SPLASH_WIDTH, SPLASH_HEIGHT)
         this.setLocationRelativeTo(null) // Set location to the center of the screen
-        this.contentPane.background = backgroudColor
+        this.contentPane.background = backgroundColor
         this.isVisible = true
     }
 
@@ -72,7 +73,7 @@ class KextorSplashScreen(splashImageName: String?, iconTheme: String?): JFrame()
         progressBar.setBounds(0, 290, SPLASH_WIDTH, 4)
         progressBar.isBorderPainted = false
         progressBar.isStringPainted = false
-        progressBar.background = backgroudColor
+        progressBar.background = backgroundColor
         progressBar.foreground = SPLASH_PROGRESS_BAR_FOREGROUND
         progressBar.value = 0
         return progressBar

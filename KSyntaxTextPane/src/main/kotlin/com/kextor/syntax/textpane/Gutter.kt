@@ -1,12 +1,12 @@
 package com.kextor.syntax.textpane
 
+import com.kextor.syntax.textpane.textarea.KSyntaxTextArea
 import java.awt.*
 import java.awt.Color
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.util.*
 import javax.swing.JTextArea
-import javax.swing.JTextPane
 import javax.swing.SwingUtilities
 import javax.swing.border.CompoundBorder
 import javax.swing.border.EmptyBorder
@@ -23,7 +23,7 @@ import javax.swing.text.*
  * @author Daniel Córdova A.
  */
 class Gutter(
-    private val kextorTextPane: JTextPane,
+    private val kSyntaxTextArea: KSyntaxTextArea,
     private val minimumWidth: Int = 2
 ): JTextArea(),
     CaretListener,
@@ -34,36 +34,32 @@ class Gutter(
     private var lastDigits: Int = 0
     private var lastHeight: Int = 0
     private var updateFont: Boolean = false
-    private var gutterBackgroundColor: Color = Color.LIGHT_GRAY
-    private var lineForegroundColor: Color = Color.BLACK
-    private var currentLineForegroundColor: Color = Color.WHITE
     private var fonts: HashMap<String, FontMetrics>? = null
 
     init {
-        kextorTextPane.font.deriveFont(10.0f)
-        font = kextorTextPane.font
+        font = KSyntaxTextAreaProperties.gutterFont
         isEditable = false
         setBorderGap()
         setPreferredWidth()
-        kextorTextPane.document.addDocumentListener(this)
-        kextorTextPane.addCaretListener(this)
-        kextorTextPane.addPropertyChangeListener("font", this)
+        kSyntaxTextArea.document.addDocumentListener(this)
+        kSyntaxTextArea.addCaretListener(this)
+        kSyntaxTextArea.addPropertyChangeListener("font", this)
     }
 
     override fun paintComponent(graphics: Graphics?) {
         super.paintComponent(graphics)
-        background = gutterBackgroundColor
-        foreground = lineForegroundColor
-        val fontMetrics: FontMetrics = kextorTextPane.getFontMetrics(kextorTextPane.font)
+        background = KSyntaxTextAreaProperties.gutterBackgroundColor
+        foreground = KSyntaxTextAreaProperties.gutterLineForegroundColor
+        val fontMetrics: FontMetrics = kSyntaxTextArea.getFontMetrics(kSyntaxTextArea.font)
         val availableWidth: Int = size.width - insets.left - insets.right
         val clip: Rectangle? = graphics?.clipBounds
-        var rowStartOffset: Int = kextorTextPane.viewToModel(Point(0, clip!!.y))
-        val endOffset: Int = kextorTextPane.viewToModel(Point(0, clip.y + clip.height))
+        var rowStartOffset: Int = kSyntaxTextArea.viewToModel(Point(0, clip!!.y))
+        val endOffset: Int = kSyntaxTextArea.viewToModel(Point(0, clip.y + clip.height))
 
         while (rowStartOffset <= endOffset) {
             try {
                 if (isCurrentLine(rowStartOffset))
-                    graphics.color = currentLineForegroundColor
+                    graphics.color = KSyntaxTextAreaProperties.gutterCurrentLineForegroundColor
                 else
                     graphics.color = foreground
 
@@ -72,7 +68,7 @@ class Gutter(
                 val offsetX: Int = getOffsetX(availableWidth, stringWidth) + insets.left
                 val offsetY: Int = getOffsetY(rowStartOffset, fontMetrics)
                 graphics.drawString(lineNumber, offsetX, offsetY)
-                rowStartOffset = Utilities.getRowEnd(kextorTextPane, rowStartOffset) + 1
+                rowStartOffset = Utilities.getRowEnd(kSyntaxTextArea, rowStartOffset) + 1
             } catch (e: Exception) {
                 break
             }
@@ -81,7 +77,7 @@ class Gutter(
     }
 
     private fun getTextLineNumber(rowStartOffset: Int): String {
-        val root: Element = kextorTextPane.document.defaultRootElement
+        val root: Element = kSyntaxTextArea.document.defaultRootElement
         val index: Int = root.getElementIndex(rowStartOffset)
         val line: Element = root.getElement(index)
 
@@ -97,7 +93,7 @@ class Gutter(
 
     @Throws(BadLocationException::class)
     private fun getOffsetY(rowStartOffset: Int, fontMetrics: FontMetrics): Int {
-        val rectangle: Rectangle = kextorTextPane.modelToView(rowStartOffset)
+        val rectangle: Rectangle = kSyntaxTextArea.modelToView(rowStartOffset)
         val lineHeight: Int = fontMetrics.height
         val y: Int = rectangle.y + rectangle.height
         var descent = 0
@@ -108,7 +104,7 @@ class Gutter(
             if (fonts == null)
                 fonts = HashMap()
 
-            val root: Element = kextorTextPane.document.defaultRootElement
+            val root: Element = kSyntaxTextArea.document.defaultRootElement
             val index: Int = root.getElementIndex(rowStartOffset)
             val line: Element = root.getElement(index)
 
@@ -122,7 +118,7 @@ class Gutter(
 
                 if (maybeFontMetrics == null) {
                     val font = Font(fontFamily, Font.PLAIN, fontSize)
-                    maybeFontMetrics = kextorTextPane.getFontMetrics(font)
+                    maybeFontMetrics = kSyntaxTextArea.getFontMetrics(font)
                     fonts!![key] = maybeFontMetrics
                 }
                 descent = Math.max(descent, maybeFontMetrics!!.descent)
@@ -132,8 +128,8 @@ class Gutter(
     }
 
     private fun isCurrentLine(rowStartOffset: Int): Boolean {
-        val caretPosition: Int = kextorTextPane.caretPosition
-        val root: Element = kextorTextPane.document.defaultRootElement
+        val caretPosition: Int = kSyntaxTextArea.caretPosition
+        val root: Element = kSyntaxTextArea.document.defaultRootElement
         return root.getElementIndex(rowStartOffset) == root.getElementIndex(caretPosition)
     }
 
@@ -141,7 +137,7 @@ class Gutter(
      *  Calculate the width needed to display the maximum line number
      */
     private fun setPreferredWidth() {
-        val root: Element = kextorTextPane.document.defaultRootElement
+        val root: Element = kSyntaxTextArea.document.defaultRootElement
         val lines: Int = root.elementCount
         val digits: Int = Math.max(lines.toString().length, minimumWidth)
         val fontMetrics: FontMetrics = getFontMetrics(font)
@@ -162,21 +158,6 @@ class Gutter(
         lastDigits = 0
     }
 
-    fun setGutterBackgroundColor(color: Color) {
-        gutterBackgroundColor = color
-    }
-
-    fun setLineForegroundColor(color: Color) {
-        lineForegroundColor = color
-    }
-
-    /**
-     * Allow to change color of current line number
-     */
-    fun setCurrentLineForegroundColor(color: Color) {
-        currentLineForegroundColor = color
-    }
-
     /**
      *  Set the update font property. Indicates whether this Font should be
      *  updated automatically when the Font of the related text component
@@ -189,8 +170,8 @@ class Gutter(
     private fun documentChanged() {
         SwingUtilities.invokeLater {
             try {
-                val endPosition: Int = kextorTextPane.document.length
-                val rectangle: Rectangle? = kextorTextPane.modelToView(endPosition)
+                val endPosition: Int = kSyntaxTextArea.document.length
+                val rectangle: Rectangle? = kSyntaxTextArea.modelToView(endPosition)
 
                 if (rectangle != null && rectangle.y != lastHeight) {
                     setPreferredWidth()
@@ -218,8 +199,8 @@ class Gutter(
     }
 
     override fun caretUpdate(caretEvent: CaretEvent) {
-        val caretPosition: Int = kextorTextPane.caretPosition
-        val root: Element = kextorTextPane.document.defaultRootElement
+        val caretPosition: Int = kSyntaxTextArea.caretPosition
+        val root: Element = kSyntaxTextArea.document.defaultRootElement
         val currentLine: Int = root.getElementIndex(caretPosition)
         if (lastLine != currentLine) {
             repaint()
