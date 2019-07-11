@@ -54,23 +54,30 @@ object Kextor {
             val listOfColorStringNumber: List<String> = colorProperty.replace("\\s+".toRegex(), "").split(",")
             val mutableListOfColorNumbers: MutableList<Int> = mutableListOf()
 
-            if (listOfColorStringNumber.size != 4) {
-                System.err.println("Bad color, Kextor won't apply custom color")
-            }
-
-            listOfColorStringNumber.forEach {
-                try {
-                    mutableListOfColorNumbers.add(it.toInt())
-                } catch (e: NumberFormatException) {
-                    System.err.println("Value is not a number ${e.message}")
+            try {
+                if (listOfColorStringNumber.size != 4) {
+                    throw IllegalArgumentException("Color must have 4 values")
                 }
+
+                listOfColorStringNumber.forEach {
+                    try {
+                        mutableListOfColorNumbers.add(it.toInt())
+                    } catch (nfe: NumberFormatException) {
+                        System.err.println("Value is not a number ${nfe.message}")
+                    }
+                }
+
+                if (mutableListOfColorNumbers.size == 4) {
+                    color = Color(
+                        mutableListOfColorNumbers[0],
+                        mutableListOfColorNumbers[1],
+                        mutableListOfColorNumbers[2],
+                        mutableListOfColorNumbers[3]
+                    )
+                }
+            } catch (iae: IllegalArgumentException) {
+                System.err.println("Bad color ${iae.message}")
             }
-            color = Color(
-                mutableListOfColorNumbers[0],
-                mutableListOfColorNumbers[1],
-                mutableListOfColorNumbers[2],
-                mutableListOfColorNumbers[3]
-            )
         }
         return color
     }
