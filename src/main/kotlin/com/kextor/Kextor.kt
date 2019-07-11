@@ -52,34 +52,44 @@ object Kextor {
         var color: Color? = null
         if (colorProperty != null ) {
             val listOfColorStringNumber: List<String> = colorProperty.replace("\\s+".toRegex(), "").split(",")
-            val mutableListOfColorNumbers: MutableList<Int> = mutableListOf()
 
             try {
                 if (listOfColorStringNumber.size != 4) {
                     throw IllegalArgumentException("Color must have 4 values")
                 }
 
-                listOfColorStringNumber.forEach {
-                    try {
-                        mutableListOfColorNumbers.add(it.toInt())
-                    } catch (nfe: NumberFormatException) {
-                        System.err.println("Value is not a number ${nfe.message}")
-                    }
-                }
-
-                if (mutableListOfColorNumbers.size == 4) {
-                    color = Color(
-                        mutableListOfColorNumbers[0],
-                        mutableListOfColorNumbers[1],
-                        mutableListOfColorNumbers[2],
-                        mutableListOfColorNumbers[3]
-                    )
-                }
+                val mutableListOfColorNumbers: MutableList<Int> = getColorNumbers(listOfColorStringNumber)
+                color = createColor(mutableListOfColorNumbers)
             } catch (iae: IllegalArgumentException) {
                 System.err.println("Bad color ${iae.message}")
             }
         }
         return color
+    }
+
+    private fun getColorNumbers(listOfColorStringNumber: List<String>): MutableList<Int> {
+        val mutableListOfColorNumbers: MutableList<Int> = mutableListOf()
+        listOfColorStringNumber.forEach {
+            try {
+                mutableListOfColorNumbers.add(it.toInt())
+            } catch (nfe: NumberFormatException) {
+                System.err.println("Value is not a number ${nfe.message}")
+            }
+        }
+        return mutableListOfColorNumbers
+    }
+
+    private fun createColor(mutableListOfColorNumbers: MutableList<Int>): Color? {
+        return if (mutableListOfColorNumbers.size == 4) {
+            Color(
+                mutableListOfColorNumbers[0],
+                mutableListOfColorNumbers[1],
+                mutableListOfColorNumbers[2],
+                mutableListOfColorNumbers[3]
+            )
+        } else {
+            null
+        }
     }
 
     private fun addKextorSplashScreen(iconTheme: String?) {
