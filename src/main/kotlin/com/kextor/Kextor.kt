@@ -26,7 +26,7 @@ object Kextor {
         addKextorSplashScreen(iconTheme)
 
         val kextor = KextorInitGUI()
-        val backgroundColor: Color = getColorProperty(propertyManager.getProperty("color.kextor.background")!!)
+        val backgroundColor: Color? = getColorProperty(propertyManager.getProperty("color.kextor.background"))
 
         // Text Area Properties
         setKSyntaxTextAreaFont()
@@ -35,7 +35,9 @@ object Kextor {
         setGutterColors()
         setScrollbarColors()
 
-        kextor.setBackgroundColor(backgroundColor)
+        backgroundColor?.let {
+            kextor.setBackgroundColor(it)
+        }
         SwingUtilities.invokeLater { kextor.createAndShowKextorGUI(iconTheme) }
     }
 
@@ -46,89 +48,106 @@ object Kextor {
     }
 
     // TODO improve this function and see if it's necessary to take it to another class
-    private fun getColorProperty(colorProperty: String): Color {
-        val listOfColorStringNumber: List<String> = colorProperty.replace("\\s+".toRegex(), "").split(",")
-        val mutableListOfColorNumbers: MutableList<Int> = mutableListOf()
+    private fun getColorProperty(colorProperty: String?): Color? {
+        var color: Color? = null
+        if (colorProperty != null ) {
+            val listOfColorStringNumber: List<String> = colorProperty.replace("\\s+".toRegex(), "").split(",")
+            val mutableListOfColorNumbers: MutableList<Int> = mutableListOf()
 
-        if(listOfColorStringNumber.size != 4) {
-            throw IllegalArgumentException("Color must have 4 numbers")
-        }
-
-        listOfColorStringNumber.forEach {
-            try {
-                mutableListOfColorNumbers.add(it.toInt())
-            } catch (e: NumberFormatException) {
-                System.err.println("Value is not a number ${e.message}")
+            if (listOfColorStringNumber.size != 4) {
+                System.err.println("Bad color, Kextor won't apply custom color")
             }
-        }
 
-        return Color(
-            mutableListOfColorNumbers[0],
-            mutableListOfColorNumbers[1],
-            mutableListOfColorNumbers[2],
-            mutableListOfColorNumbers[3]
-        )
+            listOfColorStringNumber.forEach {
+                try {
+                    mutableListOfColorNumbers.add(it.toInt())
+                } catch (e: NumberFormatException) {
+                    System.err.println("Value is not a number ${e.message}")
+                }
+            }
+            color = Color(
+                mutableListOfColorNumbers[0],
+                mutableListOfColorNumbers[1],
+                mutableListOfColorNumbers[2],
+                mutableListOfColorNumbers[3]
+            )
+        }
+        return color
     }
 
     private fun addKextorSplashScreen(iconTheme: String?) {
-        val showSplashScreen: Boolean = Kextor.propertyManager.getProperty("splash.show")!!.toBoolean()
+        val showSplashScreen: Boolean? = Kextor.propertyManager.getProperty("splash.show")?.toBoolean()
 
-        if (showSplashScreen) {
+        if (showSplashScreen == true) {
             val splashTheme: String? = Kextor.propertyManager.getProperty("splash.theme")
             KextorSplashScreen(splashTheme, iconTheme)
         }
     }
 
     private fun setKSyntaxTexAreaColors() {
-        val textAreaBGColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.background")!!)
-        val textAreaFGColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.foreground")!!)
-        val caretColor: Color = getColorProperty(propertyManager.getProperty("color.textarea.caret")!!)
+        val textAreaBGColor: Color? = getColorProperty(propertyManager.getProperty("color.textarea.background"))
+        val textAreaFGColor: Color? = getColorProperty(propertyManager.getProperty("color.textarea.foreground"))
+        val caretColor: Color? = getColorProperty(propertyManager.getProperty("color.textarea.caret"))
 
-        KSyntaxTextAreaProperties.textAreaBackgroundColor = textAreaBGColor
-        KSyntaxTextAreaProperties.textAreaForegroundColor = textAreaFGColor
-        KSyntaxTextAreaProperties.caretColor = caretColor
+        textAreaBGColor?.let{ KSyntaxTextAreaProperties.textAreaBackgroundColor = it }
+        textAreaFGColor?.let { KSyntaxTextAreaProperties.textAreaForegroundColor = it }
+        caretColor?.let { KSyntaxTextAreaProperties.caretColor = it }
     }
 
     private fun setGutterColors() {
-        val gutterBGColor: Color = getColorProperty(propertyManager.getProperty("color.gutter.background")!!)
-        val gutterLineColor: Color = getColorProperty(propertyManager.getProperty("color.gutter.foreground")!!)
-        val gutterCurrentLineColor: Color = getColorProperty(
-            propertyManager.getProperty("color.gutter.currentLineForeground")!!
+        val gutterBGColor: Color? = getColorProperty(propertyManager.getProperty("color.gutter.background"))
+        val gutterLineColor: Color? = getColorProperty(propertyManager.getProperty("color.gutter.foreground"))
+        val gutterCurrentLineColor: Color? = getColorProperty(
+            propertyManager.getProperty("color.gutter.currentLineForeground")
         )
 
-        KSyntaxTextAreaProperties.gutterBackgroundColor = gutterBGColor
-        KSyntaxTextAreaProperties.gutterLineForegroundColor = gutterLineColor
-        KSyntaxTextAreaProperties.gutterCurrentLineForegroundColor = gutterCurrentLineColor
+        gutterBGColor?.let { KSyntaxTextAreaProperties.gutterBackgroundColor = it }
+        gutterLineColor?.let { KSyntaxTextAreaProperties.gutterLineForegroundColor = it }
+        gutterCurrentLineColor?.let { KSyntaxTextAreaProperties.gutterCurrentLineForegroundColor = it }
     }
 
     private fun setKSyntaxTextAreaFont() {
-        val fontSize: Int = propertyManager.getProperty("font.textarea.size")!!.toInt()
-        val fontName: String = propertyManager.getProperty("font.textarea.name")!!
-        val fontStyle: Int = propertyManager.getProperty("font.textarea.style")!!.toInt()
+        val fontSize: Int? = propertyManager.getProperty("font.textarea.size")?.toInt()
+        val fontName: String? = propertyManager.getProperty("font.textarea.name")
+        val fontStyle: Int? = propertyManager.getProperty("font.textarea.style")?.toInt()
+        var kSyntaxTextAreaFont: Font? = null
+        fontSize?.let { size ->
+            fontStyle?.let {
+                kSyntaxTextAreaFont = Font(fontName, it, size)
+            }
+        }
 
-        val kSyntaxTextAreaFont = Font(fontName, fontStyle, fontSize)
-        KSyntaxTextAreaProperties.textAreaFont = kSyntaxTextAreaFont
+        kSyntaxTextAreaFont?.let {
+            KSyntaxTextAreaProperties.textAreaFont = it
+        }
     }
 
     private fun setGutterFont() {
-        val fontSize: Int = propertyManager.getProperty("font.gutter.size")!!.toInt()
-        val fontName: String = propertyManager.getProperty("font.gutter.name")!!
-        val fontStyle: Int = propertyManager.getProperty("font.gutter.style")!!.toInt()
+        val fontSize: Int? = propertyManager.getProperty("font.gutter.size")?.toInt()
+        val fontName: String? = propertyManager.getProperty("font.gutter.name")
+        val fontStyle: Int? = propertyManager.getProperty("font.gutter.style")?.toInt()
+        var kSyntaxTextAreaGutterFont: Font? = null
+        fontSize?.let { size ->
+            fontStyle?.let {
+                kSyntaxTextAreaGutterFont = Font(fontName, it, size)
+            }
+        }
 
-        val kSyntaxTextAreaFont = Font(fontName, fontStyle, fontSize)
-        KSyntaxTextAreaProperties.gutterFont = kSyntaxTextAreaFont
+        kSyntaxTextAreaGutterFont?.let {
+            KSyntaxTextAreaProperties.gutterFont = it
+        }
     }
 
     private fun setScrollbarColors() {
-        val scrollbarBorderColor: Color = getColorProperty(propertyManager.getProperty("color.scrollbar.border")!!)
-        val scrollbarHoverColor: Color = getColorProperty(propertyManager.getProperty("color.scrollbar.hover")!!)
-        val scrollbarDraggingColor: Color = getColorProperty(propertyManager.getProperty("color.scrollbar.dragging")!!)
-        val scrollbarBodyColor: Color = getColorProperty(propertyManager.getProperty("color.scrollbar.body")!!)
+        val scrollbarBorderColor: Color? = getColorProperty(propertyManager.getProperty("color.scrollbar.border"))
+        val scrollbarHoverColor: Color? = getColorProperty(propertyManager.getProperty("color.scrollbar.hover"))
+        val scrollbarDraggingColor: Color? = getColorProperty(propertyManager.getProperty("color.scrollbar.dragging"))
+        val scrollbarBodyColor: Color? = getColorProperty(propertyManager.getProperty("color.scrollbar.body"))
 
-        KSyntaxTextAreaProperties.kScrollBarBorderColor = scrollbarBorderColor
-        KSyntaxTextAreaProperties.kScrollBarHoverColor = scrollbarHoverColor
-        KSyntaxTextAreaProperties.kScrollBarDraggingColor = scrollbarDraggingColor
-        KSyntaxTextAreaProperties.kScrollBarBodyColor = scrollbarBodyColor
+        scrollbarBorderColor?.let { KSyntaxTextAreaProperties.kScrollBarBorderColor = it }
+        scrollbarHoverColor?.let { KSyntaxTextAreaProperties.kScrollBarHoverColor = it }
+        scrollbarDraggingColor?.let {KSyntaxTextAreaProperties.kScrollBarDraggingColor = it }
+        scrollbarBodyColor?.let { KSyntaxTextAreaProperties.kScrollBarBodyColor = it }
     }
 
 }
